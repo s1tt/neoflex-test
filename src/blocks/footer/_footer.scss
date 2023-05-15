@@ -1,0 +1,117 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 29px 27px 32.5px 29px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  border-radius: 30px 30px 0px 0px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  max-width: $width;
+
+  // margin-top: auto;
+  flex-shrink: 0;
+  scroll-behavior: smooth;
+  &__logo {
+    scroll-behavior: smooth;
+  }
+
+  &__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 174px;
+    margin-top: 6px;
+    margin-left: 50px;
+
+    &-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+
+  &__nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    flex-wrap: wrap;
+  }
+
+  &__nav-item-link {
+    text-decoration: none;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 21px;
+    color: #000000;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+
+  &__lang {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 8px;
+
+    &-items {
+      display: flex;
+      gap: 17px;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    &-item-link {
+      text-decoration: none;
+      font-family: 'Montserrat';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 18px;
+      color: #101010;
+
+      &:hover {
+        opacity: 0.5;
+      }
+
+      &_active {
+        color: #ffa542;
+        cursor: default;
+        pointer-events: none;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &__social-networks-list {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  &__social-networks-item-link {
+    display: flex;
+  }
+
+  &__social-networks-item-ico path {
+    transition: opacity 0.3s;
+  }
+
+  &__social-networks-item-link:hover path {
+    opacity: 0.5;
+  }
+}

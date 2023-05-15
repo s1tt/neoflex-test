@@ -1,0 +1,67 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  // align-content: space-between;
+  padding: 15px 0;
+
+  scroll-behavior: smooth;
+
+  &__logo {
+    margin: 0;
+    font-size: 25px;
+  }
+
+  &__shop-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 45px;
+    list-style-type: none;
+    margin-right: 6px;
+  }
+
+  &__shop-item {
+    display: flex;
+  }
+
+  &__shop-item-link {
+    display: flex;
+    position: relative;
+  }
+
+  &__shop-item-link path {
+    transition: fill 0.3s;
+  }
+
+  &__shop-item-link:hover path {
+    fill: #000000;
+  }
+
+  &__shop-count {
+    position: absolute;
+    bottom: 13px;
+    left: 16px;
+    display: block;
+    width: 17.4px;
+    height: 17.4px;
+    text-align: center;
+    background-color: #ffa542;
+    border-radius: 50%;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    color: #ffffff;
+
+    visibility: hidden;
+    opacity: 0;
+
+    &_active {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}

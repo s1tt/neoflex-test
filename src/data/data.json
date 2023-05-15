@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "title": "Apple BYZ S852I",
+    "img": "../images/headphone1.png",
+    "price": 2927,
+    "oldPrice": 3527,
+    "rate": 4.7,
+    "isWireless": false
+  },
+  {
+    "id": 2,
+    "title": "Apple EarPods",
+    "img": "../images/headphone2.png",
+    "price": 2327,
+    "rate": 4.5,
+    "isWireless": false
+  },
+  {
+    "id": 3,
+    "title": "Apple EarPods",
+    "img": "../images/headphone3.png",
+    "price": 2327,
+    "rate": 4.5,
+    "isWireless": false
+  },
+  {
+    "id": 4,
+    "title": "Apple AirPods",
+    "img": "../images/headphone-wireless1.png",
+    "price": 9527,
+    "rate": 4.7,
+    "isWireless": true
+  },
+  {
+    "id": 5,
+    "title": "GERLAX GH-04",
+    "img": "../images/headphone-wireless2.png",
+    "price": 6527,
+    "rate": 4.7,
+    "isWireless": true
+  },
+  {
+    "id": 6,
+    "title": "BOROFONE BO4",
+    "img": "../images/headphone-wireless3.png",
+    "price": 7527,
+    "rate": 4.7,
+    "isWireless": true
+  }
+]

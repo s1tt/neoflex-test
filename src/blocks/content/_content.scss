@@ -1,0 +1,28 @@
+.content {
+  display: flex;
+  gap: 28px;
+  flex-direction: column;
+  margin-top: 28px;
+  margin-bottom: 20px;
+  flex: 1;
+  &__title {
+    margin: 0;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 24px;
+    color: #838383;
+  }
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  &__items {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+}
