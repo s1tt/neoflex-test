@@ -18,109 +18,133 @@ function createCardElement(element) {
   const cardItemTotalPrice = cardElement.querySelector('.cart__card-total-price');
   const cardDeleteBtn = cardElement.querySelector('.cart__card-delete-btn');
 
-  //если елемент не одходит, перехватим ошибку
-  try {
-    const { img, title, price } = JSON.parse(element);
+  const { img, title, price, count } = element;
 
-    cardElementImg.src = img;
-    cardElementImg.alt = title;
-    cardElementTitle.textContent = title;
-    cardElementPriceCurrent.textContent = `${price.toLocaleString('ru-RU')} ₽`;
-    cardItemCount.textContent = sessionStorage.getItem(element);
-    cardItemTotalPrice.textContent = `${(parseInt(cardItemCount.textContent, 10) * price).toLocaleString('ru-RU')} ₽`;
+  cardElementImg.src = img;
+  cardElementImg.alt = title;
+  cardElementTitle.textContent = title;
+  cardElementPriceCurrent.textContent = `${price.toLocaleString('ru-RU')} ₽`;
+  cardItemCount.textContent = count;
+  cardItemTotalPrice.textContent = `${(count * price).toLocaleString('ru-RU')} ₽`;
 
-    //Обработчик на минус кнопку
-    cardMinusBtn.addEventListener('click', event => {
-      //обновление значения тотал прайса после нажатия на минус на странице и в сторедже
-      let newTotalPrice = parseInt(sessionStorage.getItem('totalPrice'), 10) - price;
-      totalPriceEl.textContent = `₽ ${newTotalPrice.toLocaleString('ru-RU')}`;
-      sessionStorage.setItem('totalPrice', newTotalPrice);
+  //Обработчик на минус кнопку
+  cardMinusBtn.addEventListener('click', event => {
+    //получаем данные из хранилища
+    const totalCounts = JSON.parse(sessionStorage.getItem('totalCounts'));
+    const cart = JSON.parse(sessionStorage.getItem('cart'));
 
-      //обновление значения тотал товаров после нажатия на плюс на странице и в сторедже
-      let newTotalItemsCount = parseInt(sessionStorage.getItem('totalItemsCount'), 10) - 1;
-      cartCount.textContent = newTotalItemsCount;
-      sessionStorage.setItem('totalItemsCount', newTotalItemsCount);
+    //обновление значения тотал прайса после нажатия на минус на странице
+    totalCounts.totalPrice = totalCounts.totalPrice - price;
+    totalPriceEl.textContent = `₽ ${totalCounts.totalPrice.toLocaleString('ru-RU')}`;
 
-      //есл тотал товаров < 1, убрать счетчик с иконки в хедере
-      if (parseInt(cartCount.textContent, 10) === 0) {
-        cartCount.classList.remove(cartCountActiveSelector);
-      }
+    //обновление значения тотал товаров после нажатия на минус на странице
+    totalCounts.totalQuantity = totalCounts.totalQuantity - 1;
+    cartCount.textContent = totalCounts.totalQuantity;
 
-      //есл тотал одного товара < 1, удалить карточку со страницы и со стореджа и прервать дальнейшую обработку
-      if (parseInt(cardItemCount.textContent, 10) === 1) {
-        event.target.closest('.cart__card').remove();
-        sessionStorage.removeItem(element);
-        return;
-      }
+    //есл тотал товаров = 0, убрать счетчик с иконки в хедере
+    if (totalCounts.totalQuantity === 0) {
+      cartCount.classList.remove(cartCountActiveSelector);
+    }
 
-      //обновление значения количества тотал ОДНОГО вида товара после нажатия на плюс на странице и в сторедже
-      sessionStorage.setItem(element, parseInt(sessionStorage.getItem(element)) - 1);
-      cardItemCount.textContent = sessionStorage.getItem(element);
+    //обновление значения количества ОДНОГО вида товара после нажатия на минус на странице и в сторедже
+    const targetProduct = cart.find(product => product.id === element.id);
+    //обновление счетчика в карточке товара
+    targetProduct.count -= 1;
+    cardItemCount.textContent = targetProduct.count;
 
-      //обновление значения цены тотал ОДНОГО вида товара после нажатия на плюс на странице
-      cardItemTotalPrice.textContent = `${(parseInt(cardItemCount.textContent, 10) * price).toLocaleString('ru-RU')}  ₽`;
-    });
+    // обновление цены в карточке товара
+    cardItemTotalPrice.textContent = `${(targetProduct.count * price).toLocaleString('ru-RU')}  ₽`;
 
-    //Обработчик на плюс кнопку
-    cardPlusBtn.addEventListener('click', () => {
-      //обновление значения тотал прайса после нажатия на плюс на странице и в сторедже
-      let newTotalPrice = parseInt(sessionStorage.getItem('totalPrice'), 10) + price;
-      totalPriceEl.textContent = `₽ ${newTotalPrice.toLocaleString('ru-RU')}`;
-      sessionStorage.setItem('totalPrice', newTotalPrice);
-
-      //обновление значения тотал товаров после нажатия на плюс на странице и в сторедже
-      let newTotalItemsCount = parseInt(sessionStorage.getItem('totalItemsCount'), 10) + 1;
-      cartCount.textContent = newTotalItemsCount;
-      sessionStorage.setItem('totalItemsCount', newTotalItemsCount);
-
-      //обновление значения количества тотал ОДНОГО вида товара после нажатия на плюс на странице и в сторедже
-      sessionStorage.setItem(element, parseInt(sessionStorage.getItem(element)) + 1);
-      cardItemCount.textContent = sessionStorage.getItem(element);
-
-      //обновление значения цены тотал ОДНОГО вида товара после нажатия на плюс на странице
-      cardItemTotalPrice.textContent = `${(parseInt(cardItemCount.textContent, 10) * price).toLocaleString('ru-RU')}  ₽`;
-    });
-
-    //Обработчик на удалить кнопку
-    cardDeleteBtn.addEventListener('click', event => {
-      //обновление значения тотал прайса после удаления карточки на странице и в сторедже
-      let newTotalPrice = parseInt(sessionStorage.getItem('totalPrice'), 10) - parseInt(cardItemTotalPrice.textContent.replace(/\s/g, ''), 10);
-      totalPriceEl.textContent = `₽ ${newTotalPrice.toLocaleString('ru-RU')}`;
-      sessionStorage.setItem('totalPrice', newTotalPrice);
-
-      //обновление значения тотал товаров после удаления карточки на странице и в сторедже
-      let newTotalItemsCount = parseInt(sessionStorage.getItem('totalItemsCount'), 10) - parseInt(cardItemCount.textContent, 10);
-      cartCount.textContent = newTotalItemsCount;
-      sessionStorage.setItem('totalItemsCount', newTotalItemsCount);
-      //есл тотал товаров < 1, убрать счетчик с иконки в хедере
-      if (parseInt(cartCount.textContent, 10) === 0) {
-        cartCount.classList.remove(cartCountActiveSelector);
-      }
-      //удалить карточку со стриницы
+    //Если счетчик товара = 0
+    if (targetProduct.count === 0) {
+      //удаляем карточку со страницы
       event.target.closest('.cart__card').remove();
-      //удалить карточку со стореджа
-      sessionStorage.removeItem(element);
-    });
+      //удаляем инфо о товаре из хранилища
+      const index = cart.indexOf(targetProduct);
+      cart.splice(index, 1);
+    }
 
-    return cardElement;
-  } catch (e) {
-    console.log(`Catch error: ${e}`);
-  }
+    //Обновляем данные в хранилище
+    sessionStorage.setItem('totalCounts', JSON.stringify(totalCounts));
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+  });
+
+  //Обработчик на плюс кнопку
+  cardPlusBtn.addEventListener('click', () => {
+    //получаем данные из хранилища
+    const totalCounts = JSON.parse(sessionStorage.getItem('totalCounts'));
+    const cart = JSON.parse(sessionStorage.getItem('cart'));
+
+    //обновление значения тотал прайса после нажатия на плюс на странице
+    totalCounts.totalPrice = totalCounts.totalPrice + price;
+    totalPriceEl.textContent = `₽ ${totalCounts.totalPrice.toLocaleString('ru-RU')}`;
+
+    //обновление значения тотал товаров после нажатия на минус на странице
+    totalCounts.totalQuantity = totalCounts.totalQuantity + 1;
+    cartCount.textContent = totalCounts.totalQuantity;
+
+    //обновление значения количества ОДНОГО вида товара после нажатия на минус на странице и в сторедже
+    const targetProduct = cart.find(product => product.id === element.id);
+    //обновление счетчика в карточке товара
+    targetProduct.count += 1;
+    cardItemCount.textContent = targetProduct.count;
+
+    // обновление цены в карточке товара
+    cardItemTotalPrice.textContent = `${(targetProduct.count * price).toLocaleString('ru-RU')}  ₽`;
+
+    //Обновляем данные в хранилище
+    sessionStorage.setItem('totalCounts', JSON.stringify(totalCounts));
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+  });
+
+  //Обработчик на удалить кнопку
+  cardDeleteBtn.addEventListener('click', event => {
+    //получаем данные из хранилища
+    const totalCounts = JSON.parse(sessionStorage.getItem('totalCounts'));
+    const cart = JSON.parse(sessionStorage.getItem('cart'));
+
+    //обновление значения тотал прайса после удаления карточки на странице и в сторедже
+    totalCounts.totalPrice = totalCounts.totalPrice - parseInt(cardItemTotalPrice.textContent.replace(/\s/g, ''), 10);
+    totalPriceEl.textContent = `₽ ${totalCounts.totalPrice.toLocaleString('ru-RU')}`;
+
+    //обновление значения тотал товаров после удаления карточки на странице и в сторедже
+    totalCounts.totalQuantity = totalCounts.totalQuantity - element.count;
+    cartCount.textContent = totalCounts.totalQuantity;
+
+    //есл тотал товаров < 1, убрать счетчик с иконки в хедере
+    if (totalCounts.totalQuantity === 0) {
+      cartCount.classList.remove(cartCountActiveSelector);
+    }
+
+    //удалить карточку со стриницы
+    event.target.closest('.cart__card').remove();
+
+    //удалить карточку со стореджа
+    const targetProduct = cart.find(product => product.id === element.id);
+    const index = cart.indexOf(targetProduct);
+    cart.splice(index, 1);
+
+    //Обновляем данные в хранилище
+    sessionStorage.setItem('totalCounts', JSON.stringify(totalCounts));
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+  });
+
+  return cardElement;
 }
 
 function generateTemplateCard() {
   //отрисовываем тотал прайс при открытии страницы корзины
-  totalPriceEl.textContent = sessionStorage.getItem('totalPrice') ? `₽ ${parseInt(sessionStorage.getItem('totalPrice'), 10).toLocaleString('ru-RU')}` : 0;
-  // проходим по стореджу и передаем каждый элемент хранилища в функцию
-  for (let i = 0; i < sessionStorage.length; i++) {
-    const element = sessionStorage.key(i);
-    const cardElement = createCardElement(element);
+  totalPriceEl.textContent = sessionStorage.getItem('totalCounts') ? `₽ ${JSON.parse(sessionStorage.getItem('totalCounts')).totalPrice.toLocaleString('ru-RU')}` : 0;
 
-    //если объект вернулся, отрисуем в корзине
-    if (cardElement) {
-      cartItems.append(cardElement);
-    }
-  }
+  //Получаем массив объектов с товарами, лежащими в корзине
+  const productsInCart = JSON.parse(sessionStorage.getItem('cart'));
+  console.log(productsInCart);
+
+  //проходим по массиву и отрисовываем каждую карточку
+  productsInCart.forEach(element => {
+    console.log(element);
+    cartItems.append(createCardElement(element));
+  });
 }
 
 generateTemplateCard();

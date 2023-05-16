@@ -74,7 +74,7 @@ const initialArray = [
   }
 ];
 
-const totalItemsCount = sessionStorage.getItem('totalItemsCount');
+const totalItemsCount = sessionStorage.getItem('totalCounts') ? JSON.parse(sessionStorage.getItem('totalCounts')).totalQuantity : 0;
 
 const templateCardId = '#card';
 

@@ -24,26 +24,7 @@ function createCardElement(element) {
   cardElementPriceOld.textContent = oldPrice ? `${oldPrice.toLocaleString('ru-RU')} ₽` : '';
   cardElementRate.textContent = rate;
 
-  function handleBuyButtonClick(element) {
-    //увеличиваем тотал прайс в сторадже при клике на купить
-    sessionStorage.setItem('totalPrice', parseInt(sessionStorage.getItem('totalPrice'), 10) + price);
-
-    //количество одного товара в корзине
-    let count = sessionStorage.getItem(JSON.stringify(element)) ?? 0;
-
-    //при клике на кнопку увеличиваем общий счетчик товаров в корзине
-    sessionStorage.setItem('totalItemsCount', parseInt(sessionStorage.getItem('totalItemsCount'), 10) + 1 || 1);
-
-    //если корзина ранее была пуста, отрисовываем значек количества на иконке в хедере
-    if (!cartCount.classList.contains(cartCountActiveSelector)) {
-      cartCount.classList.add(cartCountActiveSelector);
-    }
-
-    //счетчик количества на конкретный товар
-    sessionStorage.setItem(JSON.stringify(element), ++count);
-    cartCount.textContent = sessionStorage.getItem('totalItemsCount');
-  }
-
+  //Добавляем слушатель на кнопку "Купить"
   cardElementBuyBtn.addEventListener('click', event => {
     event.preventDefault();
     handleBuyButtonClick(element);
@@ -52,10 +33,72 @@ function createCardElement(element) {
   return cardElement;
 }
 
+//обработчик клика на "Купить"
+function handleBuyButtonClick(element) {
+  //Добавляем элемент в корзину
+  addToCart(element);
+
+  //при клике на кнопку обновляем общий счетчик товаров в корзине
+  cartCount.textContent = JSON.parse(sessionStorage.getItem('totalCounts')).totalQuantity;
+
+  //если корзина ранее была пуста, отрисовываем круг с цифрой количества на иконке в хедере
+  if (!cartCount.classList.contains(cartCountActiveSelector)) {
+    cartCount.classList.add(cartCountActiveSelector);
+  }
+}
+
+//Добавление элемента в хранилище
+function addToCart(element) {
+  const cartString = sessionStorage.getItem('cart');
+  let cart = [];
+
+  // Если массив "cart" уже существует в sessionStorage, преобразуем его из строки JSON в JavaScript-объекn
+  if (cartString) {
+    cart = JSON.parse(cartString);
+  }
+  // Поиск объекта в массиве "cart"
+  const existingObject = cart.find(obj => obj.id === element.id);
+
+  if (existingObject) {
+    // Если объект уже существует, добавляем поле "count"
+    existingObject.count = existingObject.count ? existingObject.count + 1 : 1;
+  } else {
+    // Если объект не найден, добавляем новый объект с полем "count"
+    element.count = 1;
+    cart.push(element);
+  }
+
+  // Преобразование обновленного массива "cart" обратно в строку JSON
+  const updatedCartString = JSON.stringify(cart);
+  // Сохранение обновленной строки JSON в sessionStorage
+  sessionStorage.setItem('cart', updatedCartString);
+
+  //Обновляем глобальные счетчики
+  updateTotalCounts(element);
+}
+
+//Функция, отвечающая за обновление счетчика общего кол-во товаров и итоговой цены
+function updateTotalCounts(element) {
+  const totalCountsString = sessionStorage.getItem('totalCounts');
+  let totalCounts = { totalQuantity: 1, totalPrice: element.price };
+
+  // Если массив "totalCounts" уже существует в sessionStorage, преобразуем его из строки JSON в JavaScript-объекn
+  if (totalCountsString) {
+    totalCounts = JSON.parse(totalCountsString);
+    totalCounts.totalQuantity += 1;
+    totalCounts.totalPrice += element.price;
+    console.log(totalCounts);
+  }
+
+  // Преобразование обновленного массива "totalCounts" обратно в строку JSON
+  const updatedtotalCountsString = JSON.stringify(totalCounts);
+  // Сохранение обновленной строки JSON в sessionStorage
+  sessionStorage.setItem('totalCounts', updatedtotalCountsString);
+  console.log(totalCounts);
+}
+
 //отрисовка карточки
 function generateTemplateCard() {
-  //если тотал прайс нет, создаем его в локал стораже
-  if (!sessionStorage.getItem('totalPrice')) sessionStorage.setItem('totalPrice', 0);
   // проходим по массиву изначально заданных данных
   initialArray.forEach(element => {
     const cardElement = createCardElement(element);
