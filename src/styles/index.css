@@ -203,6 +203,9 @@
 .card__buy-btn:hover {
   opacity: 0.5;
 }
+.card__buy-btn:active {
+  transform: translate(2px, 2px);
+}
 
 .cart__title {
   margin: 0;
@@ -299,6 +302,9 @@
 }
 .cart__card-count-minus:hover ellipse, .cart__card-count-plus:hover ellipse {
   opacity: 0.7;
+}
+.cart__card-count-minus:active, .cart__card-count-plus:active {
+  transform: translate(2px, 2px);
 }
 .cart__card-total {
   display: flex;

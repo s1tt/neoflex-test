@@ -99,5 +99,9 @@
     &:hover {
       opacity: 0.5;
     }
+
+    &:active {
+      transform: translate(2px, 2px);
+    }
   }
 }
