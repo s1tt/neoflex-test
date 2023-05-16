@@ -27,18 +27,17 @@ function createCardElement(element) {
   cardItemCount.textContent = count;
   cardItemTotalPrice.textContent = `${(count * price).toLocaleString('ru-RU')} ₽`;
 
-  //Обработчик на минус кнопку
-  cardMinusBtn.addEventListener('click', event => {
+  function handleUpdateCard(event, MathSymbol) {
     //получаем данные из хранилища
     const totalCounts = JSON.parse(sessionStorage.getItem('totalCounts'));
     const cart = JSON.parse(sessionStorage.getItem('cart'));
 
-    //обновление значения тотал прайса после нажатия на минус на странице
-    totalCounts.totalPrice = totalCounts.totalPrice - price;
+    //обновление значения тотал прайса после нажатия на минус или плюс на странице
+    totalCounts.totalPrice = MathSymbol === '+' ? totalCounts.totalPrice + price : totalCounts.totalPrice - price;
     totalPriceEl.textContent = `₽ ${totalCounts.totalPrice.toLocaleString('ru-RU')}`;
 
-    //обновление значения тотал товаров после нажатия на минус на странице
-    totalCounts.totalQuantity = totalCounts.totalQuantity - 1;
+    //обновление значения тотал товаров после нажатия на минус или плюс на странице
+    totalCounts.totalQuantity = MathSymbol === '+' ? totalCounts.totalQuantity + 1 : totalCounts.totalQuantity - 1;
     cartCount.textContent = totalCounts.totalQuantity;
 
     //есл тотал товаров = 0, убрать счетчик с иконки в хедере
@@ -46,10 +45,10 @@ function createCardElement(element) {
       cartCount.classList.remove(cartCountActiveSelector);
     }
 
-    //обновление значения количества ОДНОГО вида товара после нажатия на минус на странице и в сторедже
+    //обновление значения количества ОДНОГО вида товара после нажатия на минус или плюс на странице
     const targetProduct = cart.find(product => product.id === element.id);
     //обновление счетчика в карточке товара
-    targetProduct.count -= 1;
+    targetProduct.count = MathSymbol === '+' ? targetProduct.count + 1 : targetProduct.count - 1;
     cardItemCount.textContent = targetProduct.count;
 
     // обновление цены в карточке товара
@@ -67,38 +66,9 @@ function createCardElement(element) {
     //Обновляем данные в хранилище
     sessionStorage.setItem('totalCounts', JSON.stringify(totalCounts));
     sessionStorage.setItem('cart', JSON.stringify(cart));
-  });
+  }
 
-  //Обработчик на плюс кнопку
-  cardPlusBtn.addEventListener('click', () => {
-    //получаем данные из хранилища
-    const totalCounts = JSON.parse(sessionStorage.getItem('totalCounts'));
-    const cart = JSON.parse(sessionStorage.getItem('cart'));
-
-    //обновление значения тотал прайса после нажатия на плюс на странице
-    totalCounts.totalPrice = totalCounts.totalPrice + price;
-    totalPriceEl.textContent = `₽ ${totalCounts.totalPrice.toLocaleString('ru-RU')}`;
-
-    //обновление значения тотал товаров после нажатия на минус на странице
-    totalCounts.totalQuantity = totalCounts.totalQuantity + 1;
-    cartCount.textContent = totalCounts.totalQuantity;
-
-    //обновление значения количества ОДНОГО вида товара после нажатия на минус на странице и в сторедже
-    const targetProduct = cart.find(product => product.id === element.id);
-    //обновление счетчика в карточке товара
-    targetProduct.count += 1;
-    cardItemCount.textContent = targetProduct.count;
-
-    // обновление цены в карточке товара
-    cardItemTotalPrice.textContent = `${(targetProduct.count * price).toLocaleString('ru-RU')}  ₽`;
-
-    //Обновляем данные в хранилище
-    sessionStorage.setItem('totalCounts', JSON.stringify(totalCounts));
-    sessionStorage.setItem('cart', JSON.stringify(cart));
-  });
-
-  //Обработчик на удалить кнопку
-  cardDeleteBtn.addEventListener('click', event => {
+  function handleDeleteCard(event) {
     //получаем данные из хранилища
     const totalCounts = JSON.parse(sessionStorage.getItem('totalCounts'));
     const cart = JSON.parse(sessionStorage.getItem('cart'));
@@ -108,7 +78,7 @@ function createCardElement(element) {
     totalPriceEl.textContent = `₽ ${totalCounts.totalPrice.toLocaleString('ru-RU')}`;
 
     //обновление значения тотал товаров после удаления карточки на странице и в сторедже
-    totalCounts.totalQuantity = totalCounts.totalQuantity - element.count;
+    totalCounts.totalQuantity = totalCounts.totalQuantity - parseInt(cardItemCount.textContent, 10);
     cartCount.textContent = totalCounts.totalQuantity;
 
     //есл тотал товаров < 1, убрать счетчик с иконки в хедере
@@ -127,7 +97,16 @@ function createCardElement(element) {
     //Обновляем данные в хранилище
     sessionStorage.setItem('totalCounts', JSON.stringify(totalCounts));
     sessionStorage.setItem('cart', JSON.stringify(cart));
-  });
+  }
+
+  //Обработчик на минус кнопку
+  cardMinusBtn.addEventListener('click', event => handleUpdateCard(event, '-'));
+
+  //Обработчик на плюс кнопку
+  cardPlusBtn.addEventListener('click', event => handleUpdateCard(event, '+'));
+
+  //Обработчик на удалить кнопку
+  cardDeleteBtn.addEventListener('click', event => handleDeleteCard(event));
 
   return cardElement;
 }
@@ -138,13 +117,9 @@ function generateTemplateCard() {
 
   //Получаем массив объектов с товарами, лежащими в корзине
   const productsInCart = JSON.parse(sessionStorage.getItem('cart'));
-  console.log(productsInCart);
 
   //проходим по массиву и отрисовываем каждую карточку
-  productsInCart.forEach(element => {
-    console.log(element);
-    cartItems.append(createCardElement(element));
-  });
+  productsInCart.forEach(element => cartItems.append(createCardElement(element)));
 }
 
 generateTemplateCard();

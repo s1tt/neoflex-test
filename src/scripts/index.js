@@ -87,14 +87,12 @@ function updateTotalCounts(element) {
     totalCounts = JSON.parse(totalCountsString);
     totalCounts.totalQuantity += 1;
     totalCounts.totalPrice += element.price;
-    console.log(totalCounts);
   }
 
   // Преобразование обновленного массива "totalCounts" обратно в строку JSON
   const updatedtotalCountsString = JSON.stringify(totalCounts);
   // Сохранение обновленной строки JSON в sessionStorage
   sessionStorage.setItem('totalCounts', updatedtotalCountsString);
-  console.log(totalCounts);
 }
 
 //отрисовка карточки
