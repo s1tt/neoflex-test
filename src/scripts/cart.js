@@ -25,15 +25,15 @@ function createCardElement(element) {
     cardElementImg.src = img;
     cardElementImg.alt = title;
     cardElementTitle.textContent = title;
-    cardElementPriceCurrent.textContent = `${price} ₽`;
+    cardElementPriceCurrent.textContent = `${price.toLocaleString('ru-RU')} ₽`;
     cardItemCount.textContent = sessionStorage.getItem(element);
-    cardItemTotalPrice.textContent = `${parseInt(cardItemCount.textContent, 10) * parseInt(cardElementPriceCurrent.textContent, 10)} ₽`;
+    cardItemTotalPrice.textContent = `${(parseInt(cardItemCount.textContent, 10) * price).toLocaleString('ru-RU')} ₽`;
 
     //Обработчик на минус кнопку
     cardMinusBtn.addEventListener('click', event => {
       //обновление значения тотал прайса после нажатия на минус на странице и в сторедже
       let newTotalPrice = parseInt(sessionStorage.getItem('totalPrice'), 10) - price;
-      totalPriceEl.textContent = `₽ ${newTotalPrice}`;
+      totalPriceEl.textContent = `₽ ${newTotalPrice.toLocaleString('ru-RU')}`;
       sessionStorage.setItem('totalPrice', newTotalPrice);
 
       //обновление значения тотал товаров после нажатия на плюс на странице и в сторедже
@@ -58,14 +58,14 @@ function createCardElement(element) {
       cardItemCount.textContent = sessionStorage.getItem(element);
 
       //обновление значения цены тотал ОДНОГО вида товара после нажатия на плюс на странице
-      cardItemTotalPrice.textContent = parseInt(cardItemCount.textContent, 10) * price;
+      cardItemTotalPrice.textContent = `${(parseInt(cardItemCount.textContent, 10) * price).toLocaleString('ru-RU')}  ₽`;
     });
 
     //Обработчик на плюс кнопку
     cardPlusBtn.addEventListener('click', () => {
       //обновление значения тотал прайса после нажатия на плюс на странице и в сторедже
       let newTotalPrice = parseInt(sessionStorage.getItem('totalPrice'), 10) + price;
-      totalPriceEl.textContent = `₽ ${newTotalPrice}`;
+      totalPriceEl.textContent = `₽ ${newTotalPrice.toLocaleString('ru-RU')}`;
       sessionStorage.setItem('totalPrice', newTotalPrice);
 
       //обновление значения тотал товаров после нажатия на плюс на странице и в сторедже
@@ -78,14 +78,14 @@ function createCardElement(element) {
       cardItemCount.textContent = sessionStorage.getItem(element);
 
       //обновление значения цены тотал ОДНОГО вида товара после нажатия на плюс на странице
-      cardItemTotalPrice.textContent = parseInt(cardItemCount.textContent, 10) * price;
+      cardItemTotalPrice.textContent = `${(parseInt(cardItemCount.textContent, 10) * price).toLocaleString('ru-RU')}  ₽`;
     });
 
     //Обработчик на удалить кнопку
     cardDeleteBtn.addEventListener('click', event => {
       //обновление значения тотал прайса после удаления карточки на странице и в сторедже
-      let newTotalPrice = parseInt(sessionStorage.getItem('totalPrice'), 10) - parseInt(cardItemTotalPrice.textContent, 10);
-      totalPriceEl.textContent = newTotalPrice;
+      let newTotalPrice = parseInt(sessionStorage.getItem('totalPrice'), 10) - parseInt(cardItemTotalPrice.textContent.replace(/\s/g, ''), 10);
+      totalPriceEl.textContent = `₽ ${newTotalPrice.toLocaleString('ru-RU')}`;
       sessionStorage.setItem('totalPrice', newTotalPrice);
 
       //обновление значения тотал товаров после удаления карточки на странице и в сторедже
@@ -110,7 +110,7 @@ function createCardElement(element) {
 
 function generateTemplateCard() {
   //отрисовываем тотал прайс при открытии страницы корзины
-  totalPriceEl.textContent = `₽ ${sessionStorage.getItem('totalPrice')}`;
+  totalPriceEl.textContent = sessionStorage.getItem('totalPrice') ? `₽ ${parseInt(sessionStorage.getItem('totalPrice'), 10).toLocaleString('ru-RU')}` : 0;
   // проходим по стореджу и передаем каждый элемент хранилища в функцию
   for (let i = 0; i < sessionStorage.length; i++) {
     const element = sessionStorage.key(i);

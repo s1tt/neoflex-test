@@ -20,8 +20,8 @@ function createCardElement(element) {
   cardElementImg.src = img;
   cardElementImg.alt = title;
   cardElementTitle.textContent = title;
-  cardElementPriceCurrent.textContent = `${price} ₽`;
-  cardElementPriceOld.textContent = oldPrice;
+  cardElementPriceCurrent.textContent = `${price.toLocaleString('ru-RU')} ₽`;
+  cardElementPriceOld.textContent = oldPrice ? `${oldPrice.toLocaleString('ru-RU')} ₽` : '';
   cardElementRate.textContent = rate;
 
   function handleBuyButtonClick(element) {
